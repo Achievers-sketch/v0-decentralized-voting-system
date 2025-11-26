@@ -1,0 +1,38 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: VotingSystem
+    network: base-sepolia
+    source:
+      address: "0x0000000000000000000000000000000000000000" # Replace with deployed address
+      abi: VotingSystem
+      startBlock: 0 # Replace with deployment block
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Proposal
+        - Vote
+        - Voter
+        - VoteCount
+        - VotingStats
+        - ProposalCreatedEvent
+        - VoteSubmittedEvent
+        - VoteCountedEvent
+        - ProposalClosedEvent
+      abis:
+        - name: VotingSystem
+          file: ../contracts/abis/VotingSystem.json
+      eventHandlers:
+        - event: ProposalCreated(indexed uint256,indexed address,string,uint8,uint256,uint256)
+          handler: handleProposalCreated
+        - event: VoteSubmitted(indexed uint256,indexed address,uint8,uint256,uint256)
+          handler: handleVoteSubmitted
+        - event: VoteCounted(indexed uint256,indexed address,uint256)
+          handler: handleVoteCounted
+        - event: ProposalClosed(indexed uint256,uint256)
+          handler: handleProposalClosed
+      file: ./src/mapping.ts

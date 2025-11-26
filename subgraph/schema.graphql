@@ -1,0 +1,145 @@
+# Proposal entity - stores all proposal data
+type Proposal @entity {
+  id: ID!
+  proposalId: BigInt!
+  creator: Bytes!
+  description: String!
+  options: [String!]!
+  deadline: BigInt!
+  votingMode: Int!
+  status: Int!
+  createdAt: BigInt!
+  totalVotes: BigInt!
+  
+  # Relations
+  votes: [Vote!]! @derivedFrom(field: "proposal")
+  
+  # Yes/No results
+  yesVotes: BigInt
+  noVotes: BigInt
+  
+  # Quadratic results
+  tokensStaked: BigInt
+  
+  # Timestamps
+  closedAt: BigInt
+  
+  # Block info
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+# Vote entity - stores individual votes
+type Vote @entity {
+  id: ID!
+  proposal: Proposal!
+  voter: Voter!
+  voteType: Int!
+  weight: BigInt!
+  timestamp: BigInt!
+  voteData: Bytes!
+  
+  # Decoded vote data for different modes
+  yesNoVote: Boolean
+  rankedChoiceRankings: [BigInt!]
+  quadraticOptionIndex: BigInt
+  quadraticVoteAmount: BigInt
+  quadraticCost: BigInt
+  weightedOptionIndex: BigInt
+  
+  # Block info
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+# Voter entity - tracks voter history
+type Voter @entity {
+  id: ID! # Address
+  address: Bytes!
+  totalVotesCast: BigInt!
+  
+  # Relations
+  votes: [Vote!]! @derivedFrom(field: "voter")
+  proposals: [Proposal!]!
+  
+  # First and last activity
+  firstVoteAt: BigInt
+  lastVoteAt: BigInt
+}
+
+# VoteCount entity - for tracking option-level vote counts
+type VoteCount @entity {
+  id: ID! # proposalId-optionIndex
+  proposal: Proposal!
+  optionIndex: BigInt!
+  optionName: String!
+  
+  # Counts for different modes
+  count: BigInt!
+  weight: BigInt!
+  quadraticVotes: BigInt!
+  
+  # Ranked choice data
+  firstChoiceCount: BigInt!
+  rankCounts: [BigInt!]!
+}
+
+# Global stats
+type VotingStats @entity {
+  id: ID! # "global"
+  totalProposals: BigInt!
+  totalVotes: BigInt!
+  totalVoters: BigInt!
+  
+  # By mode
+  yesNoProposals: BigInt!
+  rankedChoiceProposals: BigInt!
+  quadraticProposals: BigInt!
+  weightedProposals: BigInt!
+  
+  # Token stats
+  totalTokensStaked: BigInt!
+}
+
+# Event logs for audit trail
+type ProposalCreatedEvent @entity {
+  id: ID!
+  proposalId: BigInt!
+  creator: Bytes!
+  description: String!
+  votingMode: Int!
+  deadline: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type VoteSubmittedEvent @entity {
+  id: ID!
+  proposalId: BigInt!
+  voter: Bytes!
+  voteType: Int!
+  weight: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type VoteCountedEvent @entity {
+  id: ID!
+  proposalId: BigInt!
+  voter: Bytes!
+  weight: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type ProposalClosedEvent @entity {
+  id: ID!
+  proposalId: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
