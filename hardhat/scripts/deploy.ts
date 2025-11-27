@@ -37,11 +37,12 @@ async function main() {
       constructorArguments: [],
     })
     console.log("GovernanceToken verified!")
-  } catch (error: any) {
-    if (error.message.includes("Already Verified")) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    if (errorMessage.includes("Already Verified")) {
       console.log("GovernanceToken already verified")
     } else {
-      console.error("Error verifying GovernanceToken:", error.message)
+      console.error("Error verifying GovernanceToken:", errorMessage)
     }
   }
 
@@ -51,15 +52,15 @@ async function main() {
       constructorArguments: [governanceTokenAddress],
     })
     console.log("VotingSystem verified!")
-  } catch (error: any) {
-    if (error.message.includes("Already Verified")) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    if (errorMessage.includes("Already Verified")) {
       console.log("VotingSystem already verified")
     } else {
-      console.error("Error verifying VotingSystem:", error.message)
+      console.error("Error verifying VotingSystem:", errorMessage)
     }
   }
 
-  // Output deployment summary
   console.log("\n========================================")
   console.log("DEPLOYMENT SUMMARY")
   console.log("========================================")
@@ -67,9 +68,9 @@ async function main() {
   console.log("GovernanceToken:", governanceTokenAddress)
   console.log("VotingSystem:", votingSystemAddress)
   console.log("========================================")
-  console.log("\nAdd these to your .env file:")
-  console.log(`NEXT_PUBLIC_VOTING_SYSTEM_ADDRESS=${votingSystemAddress}`)
-  console.log(`NEXT_PUBLIC_GOVERNANCE_TOKEN_ADDRESS=${governanceTokenAddress}`)
+  console.log("\nUpdate lib/contracts.ts with these addresses:")
+  console.log(`VOTING_SYSTEM_ADDRESS = "${votingSystemAddress}"`)
+  console.log(`GOVERNANCE_TOKEN_ADDRESS = "${governanceTokenAddress}"`)
 }
 
 main()
