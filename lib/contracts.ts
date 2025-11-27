@@ -3,11 +3,9 @@ import { baseSepolia } from "viem/chains"
 import VotingSystemABI from "@/contracts/abis/VotingSystem.json"
 import GovernanceTokenABI from "@/contracts/abis/GovernanceToken.json"
 
-// Contract addresses (replace after deployment)
-export const VOTING_SYSTEM_ADDRESS = (process.env.NEXT_PUBLIC_VOTING_SYSTEM_ADDRESS ||
-  "0x0000000000000000000000000000000000000000") as Address
-export const GOVERNANCE_TOKEN_ADDRESS = (process.env.NEXT_PUBLIC_GOVERNANCE_TOKEN_ADDRESS ||
-  "0x0000000000000000000000000000000000000000") as Address
+// After deploying contracts, replace these addresses with your deployed contract addresses
+export const VOTING_SYSTEM_ADDRESS = "0x0000000000000000000000000000000000000000" as Address
+export const GOVERNANCE_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000" as Address
 
 // Create public client for read operations
 export const publicClient = createPublicClient({
